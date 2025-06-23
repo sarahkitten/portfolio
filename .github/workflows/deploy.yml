@@ -56,14 +56,26 @@ jobs:
         run: npm ci
         
       - name: Build with Next.js
-        run: npm run build
-        
-      - name: List build output
         run: |
-          echo "Contents of project directory:"
-          ls -la
-          echo "Contents of out directory (if exists):"
-          ls -la out/ || echo "out directory does not exist"
+          npm run build
+          # Ensure the .nojekyll file is in the output directory
+          touch out/.nojekyll
+        
+      - name: Verify build output
+        run: |
+          echo "Checking if out directory exists..."
+          if [ -d "out" ]; then
+            echo "✓ out directory exists"
+            echo "Contents:"
+            ls -la out/
+            echo "Total files in out:"
+            find out -type f | wc -l
+          else
+            echo "✗ out directory does not exist"
+            echo "Available directories:"
+            ls -la
+            exit 1
+          fi
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
