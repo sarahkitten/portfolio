@@ -34,13 +34,6 @@ jobs:
           node-version: '20'
           cache: 'npm'
           
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        with:
-          # Automatically inject basePath in your Next.js configuration file and disable
-          # server side image optimization (so it can work with static hosting)
-          static_site_generator: next
-          
       - name: Restore cache
         uses: actions/cache@v4
         with:
@@ -55,8 +48,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
+      - name: Verify Next.js configuration
+        run: |
+          echo "Checking Next.js configuration files:"
+          ls -la next.config.*
+          echo "Content of next.config.ts:"
+          cat next.config.ts
+          echo "Verifying Node.js and npm versions:"
+          node --version
+          npm --version
+          echo "Checking package.json scripts:"
+          cat package.json | grep -A 5 '"scripts"'
+        
       - name: Build with Next.js
-        run: npm run build
+        run: |
+          npm run build
+          echo "Build completed. Checking results:"
+          ls -la
+          echo "Checking for Next.js build artifacts:"
+          ls -la .next/ || echo "No .next directory"
+          echo "Checking for output directory:"
+          ls -la out/ || echo "No out directory found"
         
       - name: Verify build output
         run: |

@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true
   },
-  distDir: 'out'
+  distDir: 'out',
 };
 
 export default nextConfig;
